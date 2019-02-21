@@ -4,8 +4,10 @@
 using std::cout;
 using std::endl;
 
-RigidBody::RigidBody(ShapeType shapeID, glm::vec2 position, glm::vec2 velocity, float mass, float rotation) 
-	: PhysicsObject(shapeID), m_position(position), m_mass(mass), m_rotation(rotation), m_velocity(velocity)
+
+RigidBody::RigidBody(ShapeType shapeID, glm::vec2 position, glm::vec2 velocity, float mass, float rotation, float linearDrag, float angularDrag, float elasticity)
+	: PhysicsObject(shapeID), m_position(position), m_mass(mass), m_rotation(rotation), m_velocity(velocity), m_linearDrag(linearDrag), 
+	m_angularDrag(angularDrag) ,m_elasticity(elasticity)
 {
 }
 
@@ -17,6 +19,16 @@ void RigidBody::fixedUpdate(glm::vec2 gravity, float timeStep)
 {
 	applyForce(gravity * m_mass * timeStep);
 	m_position += m_velocity * timeStep;
+
+	m_velocity -= m_velocity * m_linearDrag * timeStep;
+	m_angularVelocity -= m_angularVelocity * m_angularDrag * timeStep;
+
+	if (length(m_velocity) < MIN_LINEAR_THRESHOLD) {
+		m_velocity = glm::vec2(0, 0);
+	}
+	if (abs(m_angularVelocity) < MIN_ROTATION_THRESHOLD) {
+		m_angularVelocity = 0;
+	}
 }
 
 // Extra info to the console when debugging
@@ -42,15 +54,3 @@ void RigidBody::applyForceToActor(RigidBody * actor2, glm::vec2 force)
 	actor2->applyForce(force);
 }
 
-void RigidBody::resolveCollision(RigidBody * actor2)
-{
-	glm::vec2 normal = glm::normalize(actor2->getPosition() - m_position);
-	glm::vec2 relativeVelocity = actor2->getVelocity() - m_velocity;
-
-	float elasticity = 1;
-	float j = glm::dot(-(1 + elasticity) * (relativeVelocity), normal) /
-		glm::dot(normal, normal * ((1 / m_mass) + (1 / actor2->getMass())));
-
-	glm::vec2 force = normal * j;
-	applyForceToActor(actor2, -force);
-}

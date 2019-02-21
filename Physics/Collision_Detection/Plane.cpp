@@ -3,8 +3,6 @@
 #include <Gizmos.h>
 #include <iostream>
 
-
-
 Plane::Plane(): PhysicsObject(ShapeType::PLANE)
 {
 	m_distanceToOrigin = 0;
@@ -37,4 +35,15 @@ void Plane::makeGizmo()
 	glm::vec2 start = centrePoint + (parallel * lineSegmentLength);
 	glm::vec2 end = centrePoint - (parallel * lineSegmentLength);
 	aie::Gizmos::add2DLine(start, end, colour);
+}
+
+void Plane::resolveCollision(RigidBody * actor2)
+{
+	float elasticity = (actor2->getElasticity()) / 2.0f;
+
+	float j = glm::dot(-(1 + elasticity) * (actor2->getVelocity()), m_normal) /
+		1 / actor2->getMass();
+
+	glm::vec2 force = m_normal * j;
+	actor2->applyForce(force);
 }

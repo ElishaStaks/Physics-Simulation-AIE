@@ -22,17 +22,26 @@ public:
 
 	void CheckForCollision();
 
-	static bool plane2Plane(PhysicsObject*, PhysicsObject*) { return false; }
-	static bool plane2Sphere(PhysicsObject*, PhysicsObject*) { return false; }
-	static bool plane2Box(PhysicsObject*, PhysicsObject*) { return false; }
+	static bool plane2Plane(PhysicsObject* obj1, PhysicsObject* obj2) { return false; }
+	static bool plane2Sphere(PhysicsObject* obj1, PhysicsObject* obj2) { return false; }
+	static bool plane2Box(PhysicsObject* obj1, PhysicsObject* obj2) { return false; }
 	static bool sphere2Plane(PhysicsObject* obj1, PhysicsObject* obj2);
 	static bool sphere2Sphere(PhysicsObject* obj1, PhysicsObject* obj2);
 	static bool sphere2Box(PhysicsObject* obj1, PhysicsObject* obj2) { return false; }
-	static bool box2Plane(PhysicsObject*, PhysicsObject*) { return false; }
-	static bool box2Sphere(PhysicsObject*, PhysicsObject*) { return false; }
-	static bool box2Box(PhysicsObject*, PhysicsObject*) { return false; }
+	static bool box2Plane(PhysicsObject* obj1, PhysicsObject* obj2) { return false; }
+	static bool box2Sphere(PhysicsObject* obj1, PhysicsObject* obj2) { return false; }
+	static bool box2Box(PhysicsObject* obj1, PhysicsObject* obj2) { return false; }
 
 protected:
+	// Function pointer array for doing our collisions
+	typedef bool(*fn)(PhysicsObject*, PhysicsObject*);
+
+	fn collisionFunctionArray[9] {
+		PhysicsScene::plane2Plane, PhysicsScene::plane2Sphere, PhysicsScene::plane2Box,
+		PhysicsScene::sphere2Plane, PhysicsScene::sphere2Sphere, PhysicsScene::sphere2Box,
+		PhysicsScene::box2Plane, PhysicsScene::box2Sphere, PhysicsScene::box2Box,
+	};
+
 	glm::vec2 m_gravity;
 	float m_timeStep;
 	std::vector<PhysicsObject*> m_actors;

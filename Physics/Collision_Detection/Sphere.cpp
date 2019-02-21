@@ -1,8 +1,8 @@
 #include "Sphere.h"
 #include <glm/ext.hpp>
 
-Sphere::Sphere(glm::vec2 position, glm::vec2 velocity, float mass, float radius, glm::vec4 colour) 
-	: RigidBody(SPHERE, position, velocity, mass, 0)
+Sphere::Sphere(glm::vec2 position, glm::vec2 velocity, float mass, float radius, float linearDrag, float angularDrag, float elasticity, glm::vec4 colour) 
+	: RigidBody(SPHERE, position, velocity, mass, 0, linearDrag, angularDrag, 1)
 {
 	m_radius = radius;
 	m_colour = colour;
@@ -30,4 +30,17 @@ bool Sphere::checkCollision(PhysicsObject * pOther)
 		}
 	}
 	return false;
+}
+
+void Sphere::resolveCollision(RigidBody * actor2)
+{
+	glm::vec2 normal = glm::normalize(actor2->getPosition() - m_position);
+	glm::vec2 relativeVelocity = actor2->getVelocity() - m_velocity;
+	float elasticity = (m_elasticity + actor2->getElasticity()) / 2.0f;
+
+	float j = glm::dot(-(1 + elasticity) * (relativeVelocity), normal) /
+		glm::dot(normal, normal * ((1 / m_mass) + (1 / actor2->getMass())));
+
+	glm::vec2 force = normal * j;
+	applyForceToActor(actor2, force);
 }

@@ -30,8 +30,8 @@ bool Fixed_TimestepApp::startup() {
 	// Setting the time step
 	m_physicsScene->setTimeStep(0.01f);
 
-	m_ball1 = new Sphere(glm::vec2(-10, 0), glm::vec2(0, 0), 10.0f, 8.0f, glm::vec4(1, 0, 0, 1));
-	m_ball2 = new Sphere(glm::vec2(-10, -1), glm::vec2(0, 0), 2.0f, 2.0f, glm::vec4(0, 1, 0, 1));
+	m_ball1 = new Sphere(glm::vec2(-10, 0), glm::vec2(0, 0), 10.0f, 8.0f, 1.f, 1.f, glm::vec4(1, 0, 0, 1));
+	m_ball2 = new Sphere(glm::vec2(-10, -1), glm::vec2(0, 0), 2.0f, 2.0f, 1.f, 1.f, glm::vec4(0, 1, 0, 1));
 	m_physicsScene->addActor(m_ball2);
 	m_physicsScene->addActor(m_ball1);
 
