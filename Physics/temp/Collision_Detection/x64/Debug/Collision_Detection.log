@@ -1,8 +1,2 @@
-﻿  Collision_DetectionApp.cpp
-  PhysicsScene.cpp
-  Plane.cpp
-  RigidBody.cpp
-  Sphere.cpp
-  main.cpp
-  Generating Code...
+﻿  PhysicsScene.cpp
   Collision_Detection.vcxproj -> C:\Users\s181333\Desktop\RespositoryAIE\Physics\temp\Collision_Detection\x64\Debug\Collision_Detection.exe

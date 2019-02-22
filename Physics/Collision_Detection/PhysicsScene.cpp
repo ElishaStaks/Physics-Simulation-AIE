@@ -73,13 +73,6 @@ void PhysicsScene::debugScene()
 	}
 }
 
-//static fn collisionFunctionArray[] =
-//{
-//	PhysicsScene::plane2Plane, PhysicsScene::plane2Sphere, PhysicsScene::plane2Box, 
-//	PhysicsScene::sphere2Plane, PhysicsScene::sphere2Sphere, PhysicsScene::sphere2Box,
-//	PhysicsScene::box2Plane, PhysicsScene::box2Sphere, PhysicsScene::box2Box,
-//};
-
 void PhysicsScene::CheckForCollision()
 {
 	size_t actorCount = m_actors.size();
@@ -111,14 +104,16 @@ bool PhysicsScene::sphere2Plane(PhysicsObject *obj1, PhysicsObject *obj2)
 		glm::vec2 collisionNormal = plane->getNormal();
 		float sphereToPlane = glm::dot(sphere->getPosition(), plane->getNormal()) - plane->getDistance();
 
-		// If we are behind the plane then we flip the normal
+	    // If we are behind the plane then we flip the normal
 		if (sphereToPlane < 0) {
 			collisionNormal *= -1;
 			sphereToPlane *= -1;
 		}
 
 		float intersection = sphere->getRadius() - sphereToPlane;
-		if (intersection > 0) {
+		if (intersection >= 0) {
+			float overlap = intersection - sphereToPlane;
+			sphere->resolveOverlap(collisionNormal * -overlap);
 			plane->resolveCollision(sphere);
 			return true;
 		}
@@ -138,6 +133,8 @@ bool PhysicsScene::sphere2Sphere(PhysicsObject *obj1, PhysicsObject* obj2)
 		float radius = sphere1->getRadius() + sphere2->getRadius();
 
 		if (distance < radius) {
+			float overlap = distance - radius;
+			sphere1->resolveOverlap(sphere2->getPosition() * -overlap);
 			sphere1->resolveCollision(sphere2);
 			return true;
 		}

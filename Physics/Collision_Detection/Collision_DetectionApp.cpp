@@ -17,46 +17,42 @@ bool Collision_DetectionApp::startup() {
 
 	m_2dRenderer = new aie::Renderer2D();
 	m_physicsScene = new PhysicsScene();
-	m_physicsScene->setGravity(glm::vec2(0, 5));
+	m_physicsScene->setGravity(glm::vec2(0, -15.0f));
 	m_physicsScene->setTimeStep(0.01f);
 
 	// TODO: remember to change this when redistributing a build!
 	// the following path would be used instead: "./font/consolas.ttf"
 	m_font = new aie::Font("../bin/font/consolas.ttf", 32);
 
-	m_sphere1 = new Sphere(glm::vec2(-20, 0), glm::vec2(0, 0), 1.0f, 5.0f, 0, 0, 0.8f, glm::vec4(1, 1, 0, 0));
-	m_sphere2 = new Sphere(glm::vec2(20, 0), glm::vec2(0, 0), 1.0f, 5.0f, 0, 0, 0.8f, glm::vec4(1, 0, 1, 0));
+	m_sphere1 = new Sphere(glm::vec2(-50, 30), glm::vec2(0, 0), 1.0f, 5.0f, 0.f, 0, 1.f, glm::vec4(1, 1, 0, 0));
+	m_sphere2 = new Sphere(glm::vec2(-30, 10), glm::vec2(0, 0), 2.0f, 5.0f, 0.f, 0, 1.f, glm::vec4(1, 0, 1, 0));
 	m_sphere3 = new Sphere(glm::vec2(0, -20), glm::vec2(0, 0), 1.0f, 5.0f, 0, 0, 0.8f, glm::vec4(1, 1, 0, 0));
 	m_sphere4 = new Sphere(glm::vec2(0, 20), glm::vec2(0, 0), 1.0f, 5.0f, 0, 0, 0.8f, glm::vec4(1, 0, 1, 0));
-	m_sphere5 = new Sphere(glm::vec2(-70, 5), glm::vec2(0, 0), 1.0f, 5.0f, 0, 0, 0.8f, glm::vec4(1, 1, 0, 0));
-	m_sphere6 = new Sphere(glm::vec2(60, -10), glm::vec2(0, 0), 1.0f, 5.0f, 0, 0, 0.8f, glm::vec4(1, 0, 1, 0));
-	m_sphere7 = new Sphere(glm::vec2(50, -40), glm::vec2(0, 0), 1.0f, 5.0f, 0, 0, 0.8f, glm::vec4(1, 1, 0, 0));
+	//m_aabb = new AABB(glm::vec2(4, 4), glm::vec2(-60, 20), glm::vec2(2, 0), 5.0f, 0.9f, 0.5f, 0, glm::vec4(1,1,1,1));
 
-	m_plane = new Plane(glm::normalize(glm::vec2( 0, 300)), 50.0f);
-	m_plane2 = new Plane(glm::normalize(glm::vec2(0, -300)), 50.0f);
-	m_plane3 = new Plane(glm::normalize(glm::vec2(700, 0)), 90.0f);
-	m_plane4 = new Plane(glm::normalize(glm::vec2(-100, 0)), 90.0f);
+
+	m_plane = new Plane(glm::vec2(0, 1), 50.f);
+	m_plane2 = new Plane(glm::vec2(1, 0), 90.f);
+	m_plane3 = new Plane(glm::vec2(0, -1), 50.f);
+	m_plane4 = new Plane(glm::vec2(-1, 0), 90.f);
 
 	m_physicsScene->addActor(m_sphere1);
 	m_physicsScene->addActor(m_sphere2);
 	m_physicsScene->addActor(m_sphere3);
     m_physicsScene->addActor(m_sphere4);
-	m_physicsScene->addActor(m_sphere5);
-	m_physicsScene->addActor(m_sphere6);
-	m_physicsScene->addActor(m_sphere7);
+
+	//m_physicsScene->addActor(m_aabb);
 
 	m_physicsScene->addActor(m_plane);
 	m_physicsScene->addActor(m_plane2);
 	m_physicsScene->addActor(m_plane3);
 	m_physicsScene->addActor(m_plane4);
 
-	m_sphere1->applyForce(glm::vec2(60, 0));
-	m_sphere2->applyForce(glm::vec2(-60, 0));
-	m_sphere3->applyForce(glm::vec2(0, 20));
-	m_sphere4->applyForce(glm::vec2(0, -80));
-	m_sphere5->applyForce(glm::vec2(60, 0));
-	m_sphere6->applyForce(glm::vec2(-60, 0));
-	m_sphere7->applyForce(glm::vec2(0, 20));
+	m_sphere1->applyForce(glm::vec2(5, 0));
+	m_sphere2->applyForce(glm::vec2(0, 0));
+	m_sphere3->applyForce(glm::vec2(0, 0));
+	m_sphere4->applyForce(glm::vec2(0, 0));
+
 
 	return true;
 }

@@ -39,10 +39,10 @@ void Plane::makeGizmo()
 
 void Plane::resolveCollision(RigidBody * actor2)
 {
-	float elasticity = (actor2->getElasticity()) / 2.0f;
+	float elasticity = 1;
 
 	float j = glm::dot(-(1 + elasticity) * (actor2->getVelocity()), m_normal) /
-		1 / actor2->getMass();
+		(1 / actor2->getMass());
 
 	glm::vec2 force = m_normal * j;
 	actor2->applyForce(force);

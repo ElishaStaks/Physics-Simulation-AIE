@@ -54,3 +54,8 @@ void RigidBody::applyForceToActor(RigidBody * actor2, glm::vec2 force)
 	actor2->applyForce(force);
 }
 
+void RigidBody::resolveOverlap(const glm::vec2 & displacement)
+{
+	m_position += displacement;
+}
+

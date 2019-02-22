@@ -6,6 +6,7 @@
 #include "PhysicsScene.h"
 #include "RigidBody.h"
 #include "Plane.h"
+#include "AABB.h"
 
 class Collision_DetectionApp : public aie::Application {
 public:
@@ -36,6 +37,8 @@ protected:
 	Plane*              m_plane2;
 	Plane*              m_plane3;
 	Plane*              m_plane4;
+
+	AABB*               m_aabb;
 
 	PhysicsScene*       m_physicsScene;
 };
