@@ -14,6 +14,11 @@ AABB::~AABB()
 
 bool AABB::checkCollision(PhysicsObject * pOther)
 {
+	AABB* aabb = dynamic_cast<AABB*>(pOther);
+
+	if (aabb != nullptr) {
+
+	}
 	return false;
 }
 

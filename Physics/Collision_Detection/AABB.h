@@ -1,7 +1,6 @@
 #pragma once
 #include <glm/ext.hpp>
 #include <vector>
-#include <math.h>
 #include "RigidBody.h"
 
 class AABB : public RigidBody

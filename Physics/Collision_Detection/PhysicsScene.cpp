@@ -75,7 +75,7 @@ void PhysicsScene::debugScene()
 
 void PhysicsScene::CheckForCollision()
 {
-	size_t actorCount = m_actors.size();
+	int actorCount = m_actors.size();
 	// Need to check for collisions against all objects except this one
 	for (int outer = 0; outer < actorCount - 1; ++outer) {
 		for (int inner = outer + 1; inner < actorCount; inner++) {
@@ -111,9 +111,10 @@ bool PhysicsScene::sphere2Plane(PhysicsObject *obj1, PhysicsObject *obj2)
 		}
 
 		float intersection = sphere->getRadius() - sphereToPlane;
+		float overlap = intersection - sphereToPlane;
+
 		if (intersection >= 0) {
-			float overlap = intersection - sphereToPlane;
-			sphere->resolveOverlap(collisionNormal * -overlap);
+			//sphere->resolveOverlap(collisionNormal * -overlap);
 			plane->resolveCollision(sphere);
 			return true;
 		}
@@ -131,10 +132,12 @@ bool PhysicsScene::sphere2Sphere(PhysicsObject *obj1, PhysicsObject* obj2)
 	if (sphere1 != nullptr && sphere2 != nullptr) {
 		float distance = glm::distance(sphere1->getPosition(), sphere2->getPosition());
 		float radius = sphere1->getRadius() + sphere2->getRadius();
+		float overlap = radius - distance;
+		// Sphere collision normal
+		glm::vec2 normal = glm::normalize(sphere2->getPosition() - sphere1->getPosition());
 
 		if (distance < radius) {
-			float overlap = distance - radius;
-			sphere1->resolveOverlap(sphere2->getPosition() * -overlap);
+			sphere1->resolveOverlap( normal * -overlap);
 			sphere1->resolveCollision(sphere2);
 			return true;
 		}
