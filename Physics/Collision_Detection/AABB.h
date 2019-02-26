@@ -6,13 +6,13 @@
 class AABB : public RigidBody
 {
 public:
-	AABB(const glm::vec2& halfExtents, const glm::vec2& position, glm::vec2 velocity, float mass,  float linearDrag, float angularDrag, float elasticity, glm::vec4 colour);
+	AABB(const glm::vec2& halfExtents, const glm::vec2& position, glm::vec2 velocity, float mass, float rotation,  float linearDrag, float angularDrag, float angularVelocity, float moment, float elasticity, glm::vec4 colour);
 	~AABB();
 
 	virtual bool checkCollision(PhysicsObject* pOther);
 
 	void makeGizmo() override;
-	void resolveCollision(RigidBody* actor2) override;
+	//void resolveCollision(RigidBody* actor2, glm::vec2 contact, glm::vec2* collisionNormal = nullptr) override;
 	glm::vec4 getColour() { return m_colour; }
 
 	glm::vec2 getMin() const;

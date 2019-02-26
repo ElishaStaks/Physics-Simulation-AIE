@@ -76,6 +76,7 @@ void PhysicsScene::debugScene()
 void PhysicsScene::CheckForCollision()
 {
 	int actorCount = m_actors.size();
+
 	// Need to check for collisions against all objects except this one
 	for (int outer = 0; outer < actorCount - 1; ++outer) {
 		for (int inner = outer + 1; inner < actorCount; inner++) {
@@ -102,6 +103,7 @@ bool PhysicsScene::sphere2Plane(PhysicsObject *obj1, PhysicsObject *obj2)
 
 	if (sphere != nullptr && plane != nullptr) {
 		glm::vec2 collisionNormal = plane->getNormal();
+		glm::vec2 contact = sphere->getPosition() + (collisionNormal * -sphere->getRadius());
 		float sphereToPlane = glm::dot(sphere->getPosition(), plane->getNormal()) - plane->getDistance();
 
 	    // If we are behind the plane then we flip the normal
@@ -114,8 +116,8 @@ bool PhysicsScene::sphere2Plane(PhysicsObject *obj1, PhysicsObject *obj2)
 		float overlap = intersection - sphereToPlane;
 
 		if (intersection >= 0) {
+			plane->resolveCollision(sphere, contact);
 			//sphere->resolveOverlap(collisionNormal * -overlap);
-			plane->resolveCollision(sphere);
 			return true;
 		}
 	}
@@ -138,7 +140,7 @@ bool PhysicsScene::sphere2Sphere(PhysicsObject *obj1, PhysicsObject* obj2)
 
 		if (distance < radius) {
 			sphere1->resolveOverlap( normal * -overlap);
-			sphere1->resolveCollision(sphere2);
+			sphere1->resolveCollision(sphere2, 0.5f * (sphere1->getPosition() + sphere2->getPosition()));
 			return true;
 		}
 	}
