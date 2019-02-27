@@ -2,6 +2,7 @@
 #include "RigidBody.h"
 #include "Sphere.h"
 #include "Plane.h"
+#include "AABB.h"
 #include <list>
 #include <iostream>
 
@@ -107,17 +108,17 @@ bool PhysicsScene::sphere2Plane(PhysicsObject *obj1, PhysicsObject *obj2)
 		float sphereToPlane = glm::dot(sphere->getPosition(), plane->getNormal()) - plane->getDistance();
 
 	    // If we are behind the plane then we flip the normal
-		if (sphereToPlane < 0) {
+	/*	if (sphereToPlane < 0) {
 			collisionNormal *= -1;
 			sphereToPlane *= -1;
-		}
+		}*/
 
 		float intersection = sphere->getRadius() - sphereToPlane;
 		float overlap = intersection - sphereToPlane;
 
 		if (intersection >= 0) {
+			sphere->resolveOverlap(collisionNormal * (-overlap + sphere->getRadius()));
 			plane->resolveCollision(sphere, contact);
-			//sphere->resolveOverlap(collisionNormal * -overlap);
 			return true;
 		}
 	}
@@ -139,10 +140,42 @@ bool PhysicsScene::sphere2Sphere(PhysicsObject *obj1, PhysicsObject* obj2)
 		glm::vec2 normal = glm::normalize(sphere2->getPosition() - sphere1->getPosition());
 
 		if (distance < radius) {
-			sphere1->resolveOverlap( normal * -overlap);
 			sphere1->resolveCollision(sphere2, 0.5f * (sphere1->getPosition() + sphere2->getPosition()));
+			sphere1->resolveOverlap( normal * -overlap);
 			return true;
 		}
 	}
+	return false;
+}
+
+bool PhysicsScene::box2Plane(PhysicsObject * obj1, PhysicsObject * obj2)
+{
+	// Try to cast objects to sphere to sphere
+	AABB* box = dynamic_cast<AABB*>(obj1);
+	Plane* plane = dynamic_cast<Plane*>(obj2);
+ 
+	glm::vec2 Extents = (box->getMax() - box->getMin()) / 2.0f;
+	glm::vec2 Center = box->getMin() + Extents;
+	glm::vec2 Normal = plane->getNormal();
+
+	float collisionRadius = abs(Normal.x * Extents.x) + abs(Normal.y * Extents.y);
+
+	if (collisionRadius <= 0) {
+		return true;
+	}
+
+
+
+
+	return false;
+}
+
+bool PhysicsScene::box2Sphere(PhysicsObject * obj1, PhysicsObject * obj2)
+{
+	return false;
+}
+
+bool PhysicsScene::box2Box(PhysicsObject * obj1, PhysicsObject * obj2)
+{
 	return false;
 }

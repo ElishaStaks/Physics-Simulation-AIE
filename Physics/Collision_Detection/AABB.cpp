@@ -14,21 +14,13 @@ AABB::~AABB()
 
 bool AABB::checkCollision(PhysicsObject * pOther)
 {
-	AABB* aabb = dynamic_cast<AABB*>(pOther);
-
-	if (aabb != nullptr) {
-		aabb->m_halfExtents.x = 10;
-		aabb->getMin();
-		aabb->getMax();
-		aabb->m_halfExtents.y = -10;
-	}
 	return false;
 }
 
-//void AABB::resolveCollision(RigidBody * actor2, glm::vec2 contact, glm::vec2* collisionNormal = nullptr)
-//{
-//
-//}
+void AABB::resolveCollision(RigidBody * actor2, glm::vec2 contact, glm::vec2* collisionNormal)
+{
+
+}
 
 glm::vec2 AABB::getMin() const
 {
@@ -42,5 +34,5 @@ glm::vec2 AABB::getMax() const
 
 void AABB::makeGizmo()
 {
-	aie::Gizmos::add2DAABBFilled(m_position, m_halfExtents, glm::vec4(1, 1, 1, 1));
+	aie::Gizmos::add2DAABBFilled(m_position, m_halfExtents, glm::vec4(0, 1, 0, 1));
 }

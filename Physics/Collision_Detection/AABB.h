@@ -10,9 +10,9 @@ public:
 	~AABB();
 
 	virtual bool checkCollision(PhysicsObject* pOther);
+	void resolveCollision(RigidBody * actor2, glm::vec2 contact, glm::vec2* collisionNormal = nullptr);
 
 	void makeGizmo() override;
-	//void resolveCollision(RigidBody* actor2, glm::vec2 contact, glm::vec2* collisionNormal = nullptr) override;
 	glm::vec4 getColour() { return m_colour; }
 
 	glm::vec2 getMin() const;

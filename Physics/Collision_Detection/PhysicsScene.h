@@ -28,9 +28,9 @@ public:
 	static bool sphere2Plane(PhysicsObject* obj1, PhysicsObject* obj2);
 	static bool sphere2Sphere(PhysicsObject* obj1, PhysicsObject* obj2);
 	static bool sphere2Box(PhysicsObject* obj1, PhysicsObject* obj2) { return false; }
-	static bool box2Plane(PhysicsObject* obj1, PhysicsObject* obj2) { return false; }
-	static bool box2Sphere(PhysicsObject* obj1, PhysicsObject* obj2) { return false; }
-	static bool box2Box(PhysicsObject* obj1, PhysicsObject* obj2) { return false; }
+	static bool box2Plane(PhysicsObject* obj1, PhysicsObject* obj2);
+	static bool box2Sphere(PhysicsObject* obj1, PhysicsObject* obj2);
+	static bool box2Box(PhysicsObject* obj1, PhysicsObject* obj2);
 
 protected:
 	// Function pointer array for doing our collisions
