@@ -162,6 +162,7 @@ bool PhysicsScene::box2Plane(PhysicsObject * obj1, PhysicsObject * obj2)
 		float intersection2 = box->getExtents().y - boxToPlane;
 
 		if (intersection >= 0 || intersection2 >= 0) {
+			box->checkCollision(plane);
 			plane->resolveCollision(box);
 			return true;
 		}
@@ -185,6 +186,7 @@ bool PhysicsScene::box2Sphere(PhysicsObject * obj1, PhysicsObject * obj2)
 		glm::vec2 normal = glm::normalize(sphere->getPosition() - box->getPosition());
 		
 		if (glm::distance(point, sphere->getPosition()) >= sphere->getRadius()) {
+			box->checkCollision(sphere);
 			box->resolveCollision(sphere);
 			return true;
 		}
@@ -201,8 +203,9 @@ bool PhysicsScene::box2Box(PhysicsObject * obj1, PhysicsObject * obj2)
 	// If we are successfull then test for collision
 	if (box != nullptr && box2 != nullptr) {
 		// checking if all sides of the aabb are overlapping
-		if (!(box->getMax().x < box2->getMin().x || box->getMax().y < box->getMin().y ||
-			  box->getMin().x > box2->getMax().x || box->getMin().y < box->getMin().y)) {
+		if (!(box->getMax().x < box2->getMin().x || box->getMax().y < box2->getMin().y ||
+			  box->getMin().x > box2->getMax().x || box->getMin().y > box2->getMin().y)) {
+			box->checkCollision(box2);
 			box->resolveCollision(box2);
 			return true;
 		}

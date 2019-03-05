@@ -5,9 +5,9 @@ using std::cout;
 using std::endl;
 
 
-RigidBody::RigidBody(ShapeType shapeID, glm::vec2 position, glm::vec2 velocity, float mass, float rotation, float linearDrag, float angularDrag, float elasticity)
+RigidBody::RigidBody(ShapeType shapeID, glm::vec2 position, glm::vec2 velocity, float mass, float rotation, float linearDrag, float angularDrag, float elasticity, glm::vec4 colour)
 	: PhysicsObject(shapeID), m_position(position), m_mass(mass), m_rotation(rotation), m_velocity(velocity), m_linearDrag(linearDrag), 
-	m_angularDrag(angularDrag) ,m_elasticity(elasticity)
+	m_angularDrag(angularDrag) ,m_elasticity(elasticity), m_colour(colour)
 {
 }
 

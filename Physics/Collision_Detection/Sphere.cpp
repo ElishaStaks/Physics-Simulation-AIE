@@ -2,7 +2,7 @@
 #include <glm/ext.hpp>
 
 Sphere::Sphere(glm::vec2 position, glm::vec2 velocity, float mass, float radius, float linearDrag, float angularDrag, float elasticity, glm::vec4 colour) 
-	: RigidBody(SPHERE, position, velocity, mass, 0, linearDrag, angularDrag, 1)
+	: RigidBody(SPHERE, position, velocity, mass, 0, linearDrag, angularDrag, 1, colour)
 {
 	m_radius = radius;
 	m_colour = colour;

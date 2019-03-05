@@ -29,15 +29,13 @@ bool Collision_DetectionApp::startup() {
 	m_sphere3 = new Sphere(glm::vec2(0, -20), glm::vec2(0, 0), 5.0f, 5.0f, 1.f, 0.0f, 2.f, glm::vec4(1, 1, 0, 0));
 	m_sphere4 = new Sphere(glm::vec2(0, 20), glm::vec2(0, 0), 5.0f, 5.0f, 1.f, 0.0f, 2.f, glm::vec4(1, 0, 1, 0));
 
-	auto* m_sphere5 = new Sphere(glm::vec2(-80, 25), glm::vec2(0, 0), 5.0f, 5.0f, 1.f, 0.0f, 2.f, glm::vec4(1, 1, 0, 0));
+	/*auto* m_sphere5 = new Sphere(glm::vec2(-80, 25), glm::vec2(0, 0), 5.0f, 5.0f, 1.f, 0.0f, 2.f, glm::vec4(1, 1, 0, 0));
 	auto* m_sphere6 = new Sphere(glm::vec2(-25, 13), glm::vec2(0, 0), 5.0f, 5.0f, 1.f, 0.0f, 2.f, glm::vec4(1, 0, 1, 0));
 	auto* m_sphere7 = new Sphere(glm::vec2(0, -15), glm::vec2(0, 0), 5.0f, 5.0f, 1.f, 0.0f, 2.f, glm::vec4(1, 1, 0, 0));
-	auto* m_sphere8 = new Sphere(glm::vec2(0, 34), glm::vec2(0, 0), 5.0f, 5.0f, 1.f, 0.0f, 2.f, glm::vec4(1, 0, 1, 0));
+	auto* m_sphere8 = new Sphere(glm::vec2(0, 34), glm::vec2(0, 0), 5.0f, 5.0f, 1.f, 0.0f, 2.f, glm::vec4(1, 0, 1, 0));*/
 	
-	/*m_aabb = new AABB(glm::vec2(4, 4), glm::vec2(-60, 20), glm::vec2(0, 0), 5.0f, 1.0f, 0.0f, 2.f, glm::vec4(1, 1, 1, 1));
-	auto* box2 = new AABB(glm::vec2(4, 4), glm::vec2(-50, 15), glm::vec2(0, 0), 5.0f, 1.0f, 0.0f, 2.f, glm::vec4(1, 0, 0, 1));
-	auto* box3 = new AABB(glm::vec2(4, 4), glm::vec2(-34, 31), glm::vec2(0, 0), 5.0f, 1.0f, 0.0f, 2.f, glm::vec4(1, 1, 1, 1));
-	auto* box4 = new AABB(glm::vec2(4, 4), glm::vec2(-52, 18), glm::vec2(0, 0), 5.0f, 1.0f, 0.0f, 2.f, glm::vec4(0, 1, 1, 0));*/
+	m_aabb = new AABB(glm::vec2(4, 4), glm::vec2(-40, 20), glm::vec2(0, 0), 5.0f, 1.0f, 0.0f, 2.f, glm::vec4(1, 1, 1, 1));
+	auto* box2 = new AABB(glm::vec2(4, 4), glm::vec2(-30, 15), glm::vec2(0, 0), 5.0f, 1.0f, 0.0f, 2.f, glm::vec4(1, 1, 1, 1));
 
 	m_plane = new Plane(glm::vec2(0, 1), -50.f);
 	m_plane2 = new Plane(glm::vec2(1, 0), -90.f);
@@ -50,15 +48,13 @@ bool Collision_DetectionApp::startup() {
 	m_physicsScene->addActor(m_sphere2);
 	m_physicsScene->addActor(m_sphere3);
     m_physicsScene->addActor(m_sphere4);
-	m_physicsScene->addActor(m_sphere5);
+	/*m_physicsScene->addActor(m_sphere5);
 	m_physicsScene->addActor(m_sphere6);
 	m_physicsScene->addActor(m_sphere7);
 	m_physicsScene->addActor(m_sphere8);
-
-	//m_physicsScene->addActor(m_aabb);
-	//m_physicsScene->addActor(box2);
-	//m_physicsScene->addActor(box3);
-	//m_physicsScene->addActor(box4);
+*/
+	m_physicsScene->addActor(m_aabb);
+	m_physicsScene->addActor(box2);
 
 	m_physicsScene->addActor(m_plane);
 	m_physicsScene->addActor(m_plane2);
@@ -67,12 +63,13 @@ bool Collision_DetectionApp::startup() {
 	m_physicsScene->addActor(m_plane5);
 	//m_physicsScene->addActor(m_plane6);
 
-	//m_sphere1->applyForce(glm::vec2(50, 0));
-	//m_sphere2->applyForce(glm::vec2(0, 50));
-	//m_sphere3->applyForce(glm::vec2(60, 0));
-	//m_sphere4->applyForce(glm::vec2(0, 60));
+	m_sphere1->applyForce(glm::vec2(50, 0));
+	m_sphere2->applyForce(glm::vec2(0, 50));
+	m_sphere3->applyForce(glm::vec2(60, 0));
+	m_sphere4->applyForce(glm::vec2(0, 60));
 
-	//m_aabb->applyForce(glm::vec2(60, 0));
+	m_aabb->applyForce(glm::vec2(10, 0));
+	box2->applyForce(glm::vec2(0, 10));
 
 	return true;
 }
