@@ -5,9 +5,9 @@ using std::cout;
 using std::endl;
 
 
-RigidBody::RigidBody(ShapeType shapeID, glm::vec2 position, glm::vec2 velocity, float mass, float rotation, float linearDrag, float angularDrag, float angularVelocity, float moment, float elasticity)
-	: PhysicsObject(shapeID), m_position(position), m_mass(mass), m_rotation(rotation), m_velocity(velocity), m_linearDrag(linearDrag), m_angularDrag(angularDrag),
-	m_angularVelocity(angularVelocity), m_moment(moment), m_elasticity(elasticity)
+RigidBody::RigidBody(ShapeType shapeID, glm::vec2 position, glm::vec2 velocity, float mass, float rotation, float linearDrag, float angularDrag, float elasticity)
+	: PhysicsObject(shapeID), m_position(position), m_mass(mass), m_rotation(rotation), m_velocity(velocity), m_linearDrag(linearDrag), 
+	m_angularDrag(angularDrag) ,m_elasticity(elasticity)
 {
 }
 
@@ -17,14 +17,10 @@ RigidBody::~RigidBody()
 
 void RigidBody::fixedUpdate(glm::vec2 gravity, float timeStep)
 {
-	//applyForce(gravity * m_mass * timeStep);
-
-	// When applying the force of gravity, mass canels out
-	m_velocity += gravity * timeStep;
+	applyForce(gravity * m_mass * timeStep);
 	m_position += m_velocity * timeStep;
 
 	m_velocity -= m_velocity * m_linearDrag * timeStep;
-	m_rotation += m_angularVelocity * timeStep;
 	m_angularVelocity -= m_angularVelocity * m_angularDrag * timeStep;
 
 	if (length(m_velocity) < MIN_LINEAR_THRESHOLD) {
@@ -46,18 +42,17 @@ void RigidBody::debug()
 	cout << "Actor rotation: " << getRotation() << endl;
 }
 
-void RigidBody::applyForce(glm::vec2 force, glm::vec2 pos)
+void RigidBody::applyForce(glm::vec2 force)
 {
 	//f = ma
 	m_velocity += force / m_mass;
-	m_angularVelocity += (force.y * pos.x - force.x * pos.y) / (m_moment);
 }
 
-//void RigidBody::applyForceToActor(RigidBody * actor2, glm::vec2 force)
-//{
-//	applyForce(-force);
-//	actor2->applyForce(force);
-//}
+void RigidBody::applyForceToActor(RigidBody * actor2, glm::vec2 force)
+{
+	applyForce(-force);
+	actor2->applyForce(force);
+}
 
 void RigidBody::resolveOverlap(const glm::vec2 & displacement)
 {

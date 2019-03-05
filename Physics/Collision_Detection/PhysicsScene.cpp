@@ -2,11 +2,9 @@
 #include "RigidBody.h"
 #include "Sphere.h"
 #include "Plane.h"
-#include "AABB.h"
 #include <list>
 #include <iostream>
-
-
+#include "AABB.h"
 
 // Constructor by default initialises the time and the gravity of the scene
 PhysicsScene::PhysicsScene() : m_timeStep(0.01f), m_gravity(glm::vec2(0, 0))
@@ -77,7 +75,6 @@ void PhysicsScene::debugScene()
 void PhysicsScene::CheckForCollision()
 {
 	int actorCount = m_actors.size();
-
 	// Need to check for collisions against all objects except this one
 	for (int outer = 0; outer < actorCount - 1; ++outer) {
 		for (int inner = outer + 1; inner < actorCount; inner++) {
@@ -104,21 +101,18 @@ bool PhysicsScene::sphere2Plane(PhysicsObject *obj1, PhysicsObject *obj2)
 
 	if (sphere != nullptr && plane != nullptr) {
 		glm::vec2 collisionNormal = plane->getNormal();
-		glm::vec2 contact = sphere->getPosition() + (collisionNormal * -sphere->getRadius());
 		float sphereToPlane = glm::dot(sphere->getPosition(), plane->getNormal()) - plane->getDistance();
-
-	    // If we are behind the plane then we flip the normal
-	/*	if (sphereToPlane < 0) {
-			collisionNormal *= -1;
-			sphereToPlane *= -1;
-		}*/
-
 		float intersection = sphere->getRadius() - sphereToPlane;
-		float overlap = intersection - sphereToPlane;
+
+	 //   // If we are behind the plane then we flip the normal
+		//if (sphereToPlane < 0) {
+		//	collisionNormal *= -1;
+		//	sphereToPlane *= -1;
+		//}
 
 		if (intersection >= 0) {
-			sphere->resolveOverlap(collisionNormal * (-overlap + sphere->getRadius()));
-			plane->resolveCollision(sphere, contact);
+			sphere->resolveOverlap(collisionNormal * intersection);
+			plane->resolveCollision(sphere);
 			return true;
 		}
 	}
@@ -140,12 +134,17 @@ bool PhysicsScene::sphere2Sphere(PhysicsObject *obj1, PhysicsObject* obj2)
 		glm::vec2 normal = glm::normalize(sphere2->getPosition() - sphere1->getPosition());
 
 		if (distance < radius) {
-			sphere1->resolveCollision(sphere2, 0.5f * (sphere1->getPosition() + sphere2->getPosition()));
 			sphere1->resolveOverlap( normal * -overlap);
+			sphere1->resolveCollision(sphere2);
 			return true;
 		}
 	}
 	return false;
+}
+
+bool PhysicsScene::sphere2Box(PhysicsObject * obj1, PhysicsObject * obj2)
+{
+	return box2Sphere(obj2, obj1);
 }
 
 bool PhysicsScene::box2Plane(PhysicsObject * obj1, PhysicsObject * obj2)
@@ -153,29 +152,60 @@ bool PhysicsScene::box2Plane(PhysicsObject * obj1, PhysicsObject * obj2)
 	// Try to cast objects to sphere to sphere
 	AABB* box = dynamic_cast<AABB*>(obj1);
 	Plane* plane = dynamic_cast<Plane*>(obj2);
- 
-	glm::vec2 Extents = (box->getMax() - box->getMin()) / 2.0f;
-	glm::vec2 Center = box->getMin() + Extents;
-	glm::vec2 Normal = plane->getNormal();
 
-	float collisionRadius = abs(Normal.x * Extents.x) + abs(Normal.y * Extents.y);
+	// If we are successfull then test for collision
+	if (box != nullptr && plane != nullptr) {
+		glm::vec2 collisionNormal = plane->getNormal();
+		float boxToPlane = glm::dot(box->getPosition(), plane->getNormal()) - plane->getDistance();
 
-	if (collisionRadius <= 0) {
-		return true;
+		float intersection = box->getExtents().x - boxToPlane;
+		float intersection2 = box->getExtents().y - boxToPlane;
+
+		if (intersection >= 0 || intersection2 >= 0) {
+			plane->resolveCollision(box);
+			return true;
+		}
 	}
-
-
-
-
 	return false;
 }
 
 bool PhysicsScene::box2Sphere(PhysicsObject * obj1, PhysicsObject * obj2)
 {
+	// Try to cast objects to sphere to sphere
+	AABB* box = dynamic_cast<AABB*>(obj1);
+	Sphere* sphere = dynamic_cast<Sphere*>(obj2);
+
+	// If we are successfull then test for collision
+	if (box != nullptr && sphere != nullptr) {
+		// clamps the sphere to the box
+		glm::vec2 distance = clamp(sphere->getPosition(), box->getMin(), box->getMax());
+		// point of which the sphere makes contact with the box
+		glm::vec2 point = distance - sphere->getPosition();
+		// Sphere collision normal
+		glm::vec2 normal = glm::normalize(sphere->getPosition() - box->getPosition());
+		
+		if (glm::distance(point, sphere->getPosition()) >= sphere->getRadius()) {
+			box->resolveCollision(sphere);
+			return true;
+		}
+	}
 	return false;
 }
 
 bool PhysicsScene::box2Box(PhysicsObject * obj1, PhysicsObject * obj2)
 {
+	// Try to cast objects to sphere to sphere
+	AABB* box = dynamic_cast<AABB*>(obj1);
+	AABB* box2 = dynamic_cast<AABB*>(obj2);
+
+	// If we are successfull then test for collision
+	if (box != nullptr && box2 != nullptr) {
+		// checking if all sides of the aabb are overlapping
+		if (!(box->getMax().x < box2->getMin().x || box->getMax().y < box->getMin().y ||
+			  box->getMin().x > box2->getMax().x || box->getMin().y < box->getMin().y)) {
+			box->resolveCollision(box2);
+			return true;
+		}
+	}
 	return false;
 }

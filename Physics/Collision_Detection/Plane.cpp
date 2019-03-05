@@ -37,13 +37,13 @@ void Plane::makeGizmo()
 	aie::Gizmos::add2DLine(start, end, colour);
 }
 
-void Plane::resolveCollision(RigidBody * actor2, glm::vec2 contact, glm::vec2* collisionNormal)
+void Plane::resolveCollision(RigidBody * actor2)
 {
-	// The plane is static, so the relative velocity is just the actor2's velocity
-	glm::vec2 vRel = actor2->getVelocity();
-	float e = actor2->getElasticity();
-	float j = glm::dot(-(1 + e) * (vRel), m_normal) / (1 / actor2->getMass());
+	float elasticity = 1;
+
+	float j = glm::dot(-(1 + elasticity) * (actor2->getVelocity()), m_normal) /
+		(1 / actor2->getMass());
 
 	glm::vec2 force = m_normal * j;
-	actor2->applyForce(force, contact - actor2->getPosition());
+	actor2->applyForce(force);
 }

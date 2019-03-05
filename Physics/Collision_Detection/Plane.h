@@ -14,7 +14,7 @@ public:
 	virtual void makeGizmo();
 	virtual void resetPosition() {}
 
-    void resolveCollision(RigidBody* actor2, glm::vec2 contact, glm::vec2* collisionNormal = nullptr) override;
+    void resolveCollision(RigidBody* actor2) override;
 
 	glm::vec2 getNormal() { return m_normal; }
 	float getDistance() { return m_distanceToOrigin; }
