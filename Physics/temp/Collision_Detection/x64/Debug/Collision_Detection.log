@@ -1,5 +1,5 @@
 ﻿  AABB.cpp
-  PhysicsScene.cpp
-c:\users\eli the chosen one\desktop\repoaie\repositoryaie\physics\collision_detection\physicsscene.cpp(77): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  Collision_DetectionApp.cpp
   Generating Code...
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
   Collision_Detection.vcxproj -> C:\Users\Eli the chosen one\Desktop\RepoAIE\RepositoryAIE\Physics\temp\Collision_Detection\x64\Debug\Collision_Detection.exe

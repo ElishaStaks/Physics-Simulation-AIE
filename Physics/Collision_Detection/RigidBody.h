@@ -23,6 +23,7 @@ public:
 	void setLinearDrag(float linearDrag) { m_linearDrag = linearDrag; }
 	void setAngularDrag(float angularDrag) { m_angularDrag = angularDrag; }
 	void setElasticity(float elasticity) { m_elasticity = elasticity; }
+	void resolveOverlap(const glm::vec2& displacement);
 
 	glm::vec2 getPosition() { return m_position; }
 	glm::vec2 getVelocity() { return m_velocity; }
@@ -32,7 +33,6 @@ public:
 	float getAngularDrag() { return m_angularDrag; }
 	float getElasticity() { return m_elasticity; }
 
-	void resolveOverlap(const glm::vec2& displacement);
 
 protected:
 	glm::vec2 m_position;
