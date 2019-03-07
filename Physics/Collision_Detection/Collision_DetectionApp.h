@@ -37,8 +37,13 @@ protected:
 	Plane*              m_plane2;
 	Plane*              m_plane3;
 	Plane*              m_plane4;
+	Plane*              m_plane5;
+	Plane*              m_plane6;
 
-	AABB*               m_aabb;
+	AABB*               box1;
+	AABB*               box2;
+	AABB*               box3;
+	AABB*               box4;
 
 	PhysicsScene*       m_physicsScene;
 };
