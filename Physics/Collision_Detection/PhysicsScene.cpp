@@ -47,13 +47,11 @@ void PhysicsScene::update(float deltaTime)
 		for (auto pActor : m_actors) {
 			pActor->fixedUpdate(m_gravity, m_timeStep);
 		}
-
 		accumulatedTime -= m_timeStep;
 		CheckForCollision();
 	}
 }
 	
-
 // Cycles through every actor and creates a gizmos 
 void PhysicsScene::updateGizsmos()
 {
@@ -104,12 +102,6 @@ bool PhysicsScene::sphere2Plane(PhysicsObject *obj1, PhysicsObject *obj2)
 		float sphereToPlane = glm::dot(sphere->getPosition(), plane->getNormal()) - plane->getDistance();
 		float intersection = sphere->getRadius() - sphereToPlane;
 
-	 //   // If we are behind the plane then we flip the normal
-		//if (sphereToPlane < 0) {
-		//	collisionNormal *= -1;
-		//	sphereToPlane *= -1;
-		//}
-
 		if (intersection >= 0) {
 			sphere->resolveOverlap(collisionNormal * intersection);
 			plane->resolveCollision(sphere);
@@ -134,6 +126,10 @@ bool PhysicsScene::sphere2Sphere(PhysicsObject *obj1, PhysicsObject* obj2)
 		glm::vec2 normal = glm::normalize(sphere2->getPosition() - sphere1->getPosition());
 
 		if (distance < radius) {
+
+			if (sphere1->getKinematic())
+				return true;
+
 			sphere1->resolveOverlap( normal * -overlap);
 			sphere1->resolveCollision(sphere2);
 			return true;
@@ -156,13 +152,27 @@ bool PhysicsScene::box2Plane(PhysicsObject * obj1, PhysicsObject * obj2)
 	// If we are successfull then test for collision
 	if (box != nullptr && plane != nullptr) {
 		glm::vec2 collisionNormal = plane->getNormal();
-		float boxToPlane = glm::dot(box->getPosition(), plane->getNormal()) - plane->getDistance();
+		/*float boxToPlane = glm::dot(box->getPosition(), plane->getNormal()) - plane->getDistance();*/
 
-		float intersection = box->getExtents().x - boxToPlane;
-		float intersection2 = box->getExtents().y - boxToPlane;
+		glm::vec2 corners[4];
+		corners[0] = box->getMin();
+		corners[1] = { box->getMin().x, box->getMax().y };
+		corners[2] = box->getMax();
+		corners[3] = { box->getMax().x, box->getMin().y };
 
-		if (intersection >= 0 || intersection2 >= 0) {
-			box->checkCollision(plane);
+		float intersection = glm::dot(corners[0], collisionNormal) - plane->getDistance();
+
+		for (int i = 1; i < 4; i++)
+		{
+			float temp = glm::dot(corners[i], collisionNormal) - plane->getDistance();
+			if (temp < intersection) {
+				intersection = temp;
+			}
+		}
+
+		// Box restitution 
+		if (intersection <= 0) {
+			box->setPosition(box->getPosition() - intersection * collisionNormal);
 			plane->resolveCollision(box);
 			return true;
 		}
@@ -185,8 +195,11 @@ bool PhysicsScene::box2Sphere(PhysicsObject * obj1, PhysicsObject * obj2)
 		// Sphere collision normal
 		glm::vec2 normal = glm::normalize(sphere->getPosition() - box->getPosition());
 		
-		if (glm::distance(point, sphere->getPosition()) >= sphere->getRadius()) {
-			box->checkCollision(sphere);
+		if (glm::dot(point, point) <= sphere->getRadius() *  sphere->getRadius()) {
+
+			if (box->getKinematic())
+				return true;
+
 			box->resolveCollision(sphere);
 			return true;
 		}
@@ -204,8 +217,7 @@ bool PhysicsScene::box2Box(PhysicsObject * obj1, PhysicsObject * obj2)
 	if (box != nullptr && box2 != nullptr) {
 		// checking if all sides of the aabb are overlapping
 		if (!(box->getMax().x < box2->getMin().x || box->getMax().y < box2->getMin().y ||
-			  box->getMin().x > box2->getMax().x || box->getMin().y > box2->getMin().y)) {
-			box->checkCollision(box2);
+			  box2->getMax().x < box->getMin().x || box2->getMax().y < box->getMin().y)) {
 			box->resolveCollision(box2);
 			return true;
 		}
