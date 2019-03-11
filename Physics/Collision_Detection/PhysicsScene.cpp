@@ -152,7 +152,6 @@ bool PhysicsScene::box2Plane(PhysicsObject * obj1, PhysicsObject * obj2)
 	// If we are successfull then test for collision
 	if (box != nullptr && plane != nullptr) {
 		glm::vec2 collisionNormal = plane->getNormal();
-		/*float boxToPlane = glm::dot(box->getPosition(), plane->getNormal()) - plane->getDistance();*/
 
 		glm::vec2 corners[4];
 		corners[0] = box->getMin();
@@ -200,7 +199,14 @@ bool PhysicsScene::box2Sphere(PhysicsObject * obj1, PhysicsObject * obj2)
 			if (box->getKinematic())
 				return true;
 
-			box->resolveCollision(sphere);
+			// box to sphere restitution
+			glm::vec2 pointNormal = glm::normalize(point) * sphere->getRadius();
+			float intersection = glm::distance(distance, pointNormal + sphere->getPosition());
+
+			if (intersection >= 0) {
+				box->setPosition(box->getPosition() + intersection * point);
+				box->resolveCollision(sphere);
+			}
 			return true;
 		}
 	}
@@ -218,7 +224,60 @@ bool PhysicsScene::box2Box(PhysicsObject * obj1, PhysicsObject * obj2)
 		// checking if all sides of the aabb are overlapping
 		if (!(box->getMax().x < box2->getMin().x || box->getMax().y < box2->getMin().y ||
 			  box2->getMax().x < box->getMin().x || box2->getMax().y < box->getMin().y)) {
-			box->resolveCollision(box2);
+
+			if (box->getKinematic())
+				return true;
+
+			float x1 = box2->getMax().x - box->getMin().x;
+			float x2 = box->getMax().x - box2->getMin().x;
+
+			float y1 = box2->getMax().y - box->getMin().y;
+			float y2 = box->getMax().y - box2->getMin().y;
+
+			float smallestDist = x1;
+
+			if (x2 < smallestDist)
+				smallestDist = x2;
+			if (y1 < smallestDist)
+				smallestDist = y1;
+			if (y2 < smallestDist)
+				smallestDist = y2;
+
+			if (smallestDist == x1) {
+				glm::vec2 collisionNormal = glm::vec2(1, 0);
+
+				box->setPosition(box->getPosition() + collisionNormal * smallestDist * 0.5f);
+				box2->setPosition(box2->getPosition() - collisionNormal * smallestDist * 0.5f);
+
+				box->resolveCollision(box2);
+			}
+			else if(smallestDist == x2)
+			{
+				glm::vec2 collisionNormal = glm::vec2(-1, 0);
+
+				box->setPosition(box->getPosition() + collisionNormal * smallestDist * 0.5f);
+				box2->setPosition(box2->getPosition() - collisionNormal * smallestDist * 0.5f);
+
+				box->resolveCollision(box2);
+			}
+			else if (smallestDist == y1)
+			{
+				glm::vec2 collisionNormal = glm::vec2(0, 1);
+
+				box->setPosition(box->getPosition() + collisionNormal * smallestDist * 0.5f);
+				box2->setPosition(box2->getPosition() - collisionNormal * smallestDist * 0.5f);
+
+				box->resolveCollision(box2);
+			}
+			else if (smallestDist == y2)
+			{
+				glm::vec2 collisionNormal = glm::vec2(0, -1);
+
+				box->setPosition(box->getPosition() + collisionNormal * smallestDist * 0.5f);
+				box2->setPosition(box2->getPosition() - collisionNormal * smallestDist * 0.5f);
+
+				box->resolveCollision(box2);
+			}
 			return true;
 		}
 	}
