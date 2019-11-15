@@ -2,6 +2,10 @@
 #include "Texture.h"
 #include "Font.h"
 #include "Input.h"
+#include <iostream>
+#include "Plane.h"
+#include "Sphere.h"
+#include "AABB.h"
 
 Collision_DetectionApp::Collision_DetectionApp() {
 
@@ -16,64 +20,58 @@ bool Collision_DetectionApp::startup() {
 	aie::Gizmos::create(255U, 255U, 65535U, 65535U);
 
 	m_2dRenderer = new aie::Renderer2D();
-	m_physicsScene = new PhysicsScene();
-	m_physicsScene->setGravity(glm::vec2(0, -11.0f));
-	m_physicsScene->setTimeStep(0.01f);
-
-	// TODO: remember to change this when redistributing a build!
-	// the following path would be used instead: "./font/consolas.ttf"
 	m_font = new aie::Font("../bin/font/consolas.ttf", 32);
 
-	// kinematic object
-	m_sphere1 = new Sphere(glm::vec2(0, 0), glm::vec2(0, 0), 2.0f, 5.0f, 0.0f, 0.0f, 1.f, true, false, glm::vec4(1, 0, 0, 1));
+	m_physicsScene = new PhysicsScene();
+	m_physicsScene->SetGravity(glm::vec2(0, -10.0f));
+	m_physicsScene->SetTimeStep(0.01f);
 
-	// forces applied
-	m_sphere2 = new Sphere(glm::vec2(30, 10), glm::vec2(0, 0), 3.0f, 5.0f, 0.2f, 0.0f, 1.f, false, false, glm::vec4(0, 1, 0, 1));
-	m_sphere3 = new Sphere(glm::vec2(0, -20), glm::vec2(0, 0), 2.0f, 5.0f, 0.2f, 0.0f, 1.f, false, false, glm::vec4(1, 1, 1, 1));
-	m_sphere4 = new Sphere(glm::vec2(0, 20), glm::vec2(0, 0), 3.0f, 5.0f, 0.2f, 0.0f, 1.f, false, false, glm::vec4(1, 0, 1, 1));
-	
-	// static objects
-	box1 = new AABB(glm::vec2(3, 3), glm::vec2(-5, 20), glm::vec2(0, 0), 2.0f, 0.0f, 0.0f, 1.f, false, true, glm::vec4(1, 0, 0, 1));
-    box2 = new AABB(glm::vec2(3, 3), glm::vec2(5, 20), glm::vec2(0, 0), 3.0f, 0.0f, 0.0f, 1.f, false, true, glm::vec4(1, 0, 0, 1));
+	Plane* top = new Plane(glm::normalize(glm::vec2(0, -1)), -55.0);
+	m_physicsScene->AddActor(top);
+	Plane* bottom = new Plane(glm::normalize(glm::vec2(0, 1)), -55.0);
+	m_physicsScene->AddActor(bottom);
+	Plane* right = new Plane(glm::normalize(glm::vec2(-1, 0)), -90.0f);
+	m_physicsScene->AddActor(right);
+	Plane* left = new Plane(glm::normalize(glm::vec2(1, 0)), -90.0f);
+	m_physicsScene->AddActor(left);
+	Plane* plane1 = new Plane(glm::normalize(glm::vec2(0.707f, 0.707f)), -70.0f);
+	m_physicsScene->AddActor(plane1);
+	Plane* plane2 = new Plane(glm::normalize(glm::vec2(-0.707f, 0.707f)), -70.0f);
+	m_physicsScene->AddActor(plane2);
 
-	// forces applied
-	auto* box3 = new AABB(glm::vec2(5, 5), glm::vec2(-28, 30), glm::vec2(0, 0), 3.0f, 0.2f, 0.0f, 1.f, false, false, glm::vec4(1, 1, 0, 1));
-	auto* box4 = new AABB(glm::vec2(4, 4), glm::vec2(10, 30), glm::vec2(0, 0), 2.0f, 0.2f, 0.0f, 1.f, false, false, glm::vec4(1, 1, 1, 1));
-	auto* box5 = new AABB(glm::vec2(3, 3), glm::vec2(60, 30), glm::vec2(0, 0), 3.0f, 0.2f, 0.0f, 1.f, false, false, glm::vec4(1, 0, 1, 1));
+	AABB* staticBox = new AABB(glm::vec2(7.0f, 7.0f), glm::vec2(-5, 20), glm::vec2(0, 0), 2.0f, glm::vec4(1, 0, 0, 1), false, true, 1.0f, 0.0f, 0.0f);
+	m_physicsScene->AddActor(staticBox);
 
-	m_plane = new Plane(glm::vec2(0, 1), -50.f);
-	m_plane2 = new Plane(glm::vec2(1, 0), -90.f);
-	m_plane3 = new Plane(glm::vec2(0, -1), -50.f);
-	m_plane4 = new Plane(glm::vec2(-1, 0), -90.f);
-	m_plane5 = new Plane(glm::vec2(0.707f, 0.707f), -45.f);
-	//m_plane6 = new Plane(glm::vec2(-0.707f, 0.707f), -45.f);
+	Sphere* staticCircle = new Sphere({ -40.0f, 0.0f }, { 0.0f, 0.0f }, 10.0f, 1.0f, { 1.0f, 1.0f, 1.0f, 1.0f }, true, false);
+	m_physicsScene->AddActor(staticCircle);
 
-	m_physicsScene->addActor(m_sphere1);
-	m_physicsScene->addActor(m_sphere2);
-	m_physicsScene->addActor(m_sphere3);
-    m_physicsScene->addActor(m_sphere4);
+	AABB* box1 = new AABB(glm::vec2(7.0f, 7.0f), { 55.0f, 30.0f }, { 0.0f, 10.0f }, 2.0f, { 1.0f, 0.0f, 0.0f, 1.0f }, false, false);
+	m_physicsScene->AddActor(box1);
+	AABB* box2 = new AABB(glm::vec2(7.0f, 7.0f), { -65.0f, 7.0f }, { 3.0f, 3.0f }, 5.0f, { 0.0f, 1.0f, 1.0f, 1.0f }, false, false);
+	m_physicsScene->AddActor(box2);
+	AABB* box3 = new AABB(glm::vec2(7.0f, 7.0f), { 60.0f, -7.0f }, { 10.0f, 0.0f }, 2.0f, { 1.0f, 1.0f, 0.0f, 1.0f }, false, false);
+	m_physicsScene->AddActor(box3);
+	AABB* box4 = new AABB(glm::vec2(7.0f, 7.0f), { -65.0f, -20.0f }, { -3.0f, 3.0f }, 5.0f, { 1.0f, 0.0f, 1.0f, 1.0f }, false, false);
+	m_physicsScene->AddActor(box4);
 
-	m_physicsScene->addActor(box1);
-	m_physicsScene->addActor(box2);
-	m_physicsScene->addActor(box3);
-	m_physicsScene->addActor(box4);
-	m_physicsScene->addActor(box5);
+	Sphere* sphere1 = new Sphere({ -60.0f, 20.0f }, { 0.0f, -10.0f }, 5.0f, 2.0f, { 1.0f, 0.0f, 0.0f, 1.0f }, false, false);
+	m_physicsScene->AddActor(sphere1);
+	Sphere* sphere2 = new Sphere({ 65.0f, 7.0f }, { -3.0f, -3.0f }, 5.0f, 5.0f, { 0.0f, 1.0f, 1.0f, 1.0f }, false, false);
+	m_physicsScene->AddActor(sphere2);
+	Sphere* sphere3 = new Sphere({ -60.0f, -7.0f }, { -10.0f, 0.0f }, 5.0f, 2.0f, { 1.0f, 1.0f, 0.0f, 1.0f }, false, false);
+	m_physicsScene->AddActor(sphere3);
+	Sphere* sphere4 = new Sphere({ 65.0f, -20.0f }, { -3.0f, -3.0f }, 5.0f, 5.0f, { 1.0f, 0.0f, 1.0f, 1.0f }, false, false);
+	m_physicsScene->AddActor(sphere4);
 
-	m_physicsScene->addActor(m_plane);
-	m_physicsScene->addActor(m_plane2);
-	m_physicsScene->addActor(m_plane3);
-	m_physicsScene->addActor(m_plane4);
-	m_physicsScene->addActor(m_plane5);
-	//m_physicsScene->addActor(m_plane6);
+	sphere1->ApplyForce(glm::vec2(50, 0));
+	sphere2->ApplyForce(glm::vec2(0, 50));
+	sphere3->ApplyForce(glm::vec2(50, 0));
+	sphere4->ApplyForce(glm::vec2(0, 50));
 
-	m_sphere1->applyForce(glm::vec2(50, 0));
-	m_sphere2->applyForce(glm::vec2(0, 50));
-	m_sphere3->applyForce(glm::vec2(50, 0));
-	m_sphere4->applyForce(glm::vec2(0, 50));
-
-	box3->applyForce(glm::vec2(0, 50));
-	box4->applyForce(glm::vec2(50, 0));
-	box5->applyForce(glm::vec2(0, 50));
+	box1->ApplyForce(glm::vec2(0, 50));
+	box2->ApplyForce(glm::vec2(50, 0));
+	box3->ApplyForce(glm::vec2(30, 50));
+	box4->ApplyForce(glm::vec2(10, 50));
 
 	return true;
 }
@@ -82,8 +80,9 @@ void Collision_DetectionApp::shutdown() {
 
 	delete m_font;
 	delete m_2dRenderer;
-	delete m_physicsScene;
 	aie::Gizmos::destroy();
+	delete m_physicsScene;
+	m_physicsScene = nullptr;
 }
 
 void Collision_DetectionApp::update(float deltaTime) {
@@ -92,9 +91,9 @@ void Collision_DetectionApp::update(float deltaTime) {
 	aie::Input* input = aie::Input::getInstance();
 
 	aie::Gizmos::clear();
-	m_physicsScene->debugScene();
+	
 	m_physicsScene->update(deltaTime);
-	m_physicsScene->updateGizsmos();
+	m_physicsScene->UpdateGizsmos();
 
 	// exit the application
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))

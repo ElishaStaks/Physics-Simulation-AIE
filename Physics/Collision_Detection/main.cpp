@@ -1,7 +1,9 @@
 #include "Collision_DetectionApp.h"
+#include <iostream>
 
 int main() {
-	// This function will dump memory leaks to the visual studio output window upon termination
+
+	// log memory leaks
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
 	// allocation

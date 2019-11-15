@@ -4,98 +4,139 @@
 using std::cout;
 using std::endl;
 
-RigidBody::RigidBody(ShapeType shapeID, glm::vec2 position, glm::vec2 velocity, float mass, float rotation, float linearDrag, float angularDrag, 
-	float elasticity, bool kinematic, bool isStatic, glm::vec4 colour)
-	: PhysicsObject(shapeID), m_position(position), m_mass(mass), m_rotation(rotation), m_velocity(velocity), m_linearDrag(linearDrag), 
-	m_angularDrag(angularDrag) ,m_elasticity(elasticity), isKinematic(kinematic), m_colour(colour)
+RigidBody::RigidBody(const ShapeType& shapeID, const glm::vec2& position, const glm::vec2& velocity, const float rotation, const float mass,
+	const glm::vec4& colour, const bool kinematic, const bool isStatic,
+	const float elasticity, const float linearDrag, const float angularDrag)
+	: PhysicsObject(shapeID, colour, kinematic)
 {
-	isKinematic = false;
-	isStaticRigid = false;
+	m_position = position;
+	m_velocity = velocity;
+	m_rotation = rotation;
+	m_mass = mass;
+	m_elasticity = elasticity;
+	m_linearDrag = linearDrag;
+	m_angularDrag = angularDrag;
+	m_isStaticRigid = isStatic;
+	isKinematic = kinematic;
 }
 
 RigidBody::~RigidBody()
 {
 }
 
-void RigidBody::fixedUpdate(glm::vec2 gravity, float timeStep)
+void RigidBody::FixedUpdate(const glm::vec2& gravity, const float timeStep)
 {
-	if (isKinematic || isStaticRigid)
+	if (isKinematic || m_isStaticRigid)
 		return;
 
-	applyForce(gravity * m_mass * timeStep);
+	ApplyForce(gravity * m_mass * timeStep);
 	m_position += m_velocity * timeStep;
 
 	m_velocity -= m_velocity * m_linearDrag * timeStep;
 
+	// if the velocity is small enough to be below the threshold then it is set to 0
 	if (length(m_velocity) < MIN_LINEAR_THRESHOLD) {
-		m_velocity = glm::vec2(0, 0);
+		m_velocity = glm::vec2(0.0f, 0.0f);
 	}
 }
 
 // Extra info to the console when debugging
-void RigidBody::debug()
+void RigidBody::Debug()
 {
-	cout << "Actor mass: " << getMass() << endl;
-	cout << "Actor position x: " << m_position.x << endl;
-	cout << "Actor position y: " << m_position.y << endl;
-	cout << "Actor velocity x: " << m_velocity.x << endl;
-	cout << "Actor velocity y: " << m_velocity.y << endl;
-	cout << "Actor rotation: " << getRotation() << endl;
+	std::cout << "Position: " << m_position.x << ", " << m_position.y << std::endl;
+	std::cout << "Velocity: " << m_velocity.x << ", " << m_velocity.y << std::endl;
 }
 
 void RigidBody::resolveCollision(RigidBody * actor2)
 {
-	if ( this->getRigidStatic() && !actor2->getRigidStatic()) {
+	if ( this->GetStatic() && !actor2->GetStatic()) {
 
-		glm::vec2 normal = glm::normalize(actor2->getPosition() - m_position);
+		glm::vec2 normal = glm::normalize(actor2->GetPosition() - m_position);
 		float elasticity = 1;
 
-		float j = glm::dot(-(1 + elasticity) * (actor2->getVelocity()), normal) /
-			(1 / actor2->getMass());
+		float j = glm::dot(-(1 + elasticity) * (actor2->GetVelocity()), normal) /
+			(1 / actor2->GetMass());
 
 		glm::vec2 force = normal * j;
-		actor2->applyForce(force);
+		actor2->ApplyForce(force);
 	
 	}
-	else if (!this->getRigidStatic() && actor2->getRigidStatic())
+	else if (!this->GetStatic() && actor2->GetStatic())
 	{
-		glm::vec2 normal = glm::normalize(actor2->getPosition() - m_position);
+		glm::vec2 normal = glm::normalize(actor2->GetPosition() - m_position);
 		float elasticity = 1;
 
-		float j = glm::dot(-(1 + elasticity) * (this->getVelocity()), normal) /
-			(1 / this->getMass());
+		float j = glm::dot(-(1 + elasticity) * (this->GetVelocity()), normal) /
+			(1 / this->GetMass());
 
 		glm::vec2 force = normal * j;
-		this->applyForce(force);
+		this->ApplyForce(force);
 	}
 	else {
-		glm::vec2 normal = glm::normalize(actor2->getPosition() - m_position);
-		glm::vec2 relativeVelocity = actor2->getVelocity() - m_velocity;
-		float elasticity = (m_elasticity + actor2->getElasticity()) / 2.0f;
+		glm::vec2 normal = glm::normalize(actor2->GetPosition() - m_position);
+		glm::vec2 relativeVelocity = actor2->GetVelocity() - m_velocity;
+		float elasticity = (m_elasticity + actor2->GetElasticity()) / 2.0f;
 
 		float j = glm::dot(-(1 + elasticity) * (relativeVelocity), normal) /
-			glm::dot(normal, normal * ((1 / m_mass) + (1 / actor2->getMass())));
+			glm::dot(normal, normal * ((1 / m_mass) + (1 / actor2->GetMass())));
 
 		glm::vec2 force = normal * j;
-		applyForceToActor(actor2, force);
+		ApplyForceToActor(force, actor2);
 		std::cout << "COLLISION SUCCESSFUL" << std::endl;
 	}
 }
 
-void RigidBody::applyForce(glm::vec2 force)
+void RigidBody::ApplyForce(const glm::vec2 & force)
 {
-	//f = ma
+	if (m_kinematic || m_isStaticRigid)
+		return;
+
 	m_velocity += force / m_mass;
 }
 
-void RigidBody::applyForceToActor(RigidBody * actor2, glm::vec2 force)
+void RigidBody::ApplyForceToActor(const glm::vec2 & force, RigidBody* actor)
 {
-	applyForce(-force);
-	actor2->applyForce(force);
+	ApplyForce(-force);
+	actor->ApplyForce(force);
 }
+
 
 void RigidBody::resolveOverlap(const glm::vec2 & displacement)
 {
 	m_position += displacement;
 }
 
+void RigidBody::SetPosition(const glm::vec2 & position)
+{
+	m_position = position;
+}
+
+void RigidBody::SetVelocity(const glm::vec2 & velocity)
+{
+	m_velocity = velocity;
+}
+
+void RigidBody::SetRotation(const float rotation)
+{
+	m_rotation = rotation;
+}
+
+void RigidBody::SetMass(const float mass)
+{
+	m_mass = mass;
+}
+
+void RigidBody::SetLinearDrag(const float linearDrag)
+{
+	m_linearDrag = linearDrag;
+}
+
+void RigidBody::SetAngularDrag(const float angularDrag)
+{
+	m_angularDrag = angularDrag;
+}
+
+//void RigidBody::SetStatic(const bool staticRigidbody)
+//{
+//	m_isStaticRigid = staticRigidbody;
+//}

@@ -1,5 +1,6 @@
 #pragma once
 #include <glm/vec2.hpp>
+#include <glm/vec4.hpp>
 
 // Shape of actors
 enum ShapeType {
@@ -13,17 +14,33 @@ enum ShapeType {
 
 class PhysicsObject
 {
+
+protected:
+	PhysicsObject(const ShapeType& a_shapeID, const glm::vec4& colour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), const bool kinematic = false, const bool isStatic = false) :
+		m_shapeID(a_shapeID), m_colour(colour), m_kinematic(kinematic), m_isStatic(isStatic) {}
+
 public:
-	virtual void fixedUpdate(glm::vec2 gravity, float timeStep) = 0;
-	virtual void debug() = 0;
+	virtual void FixedUpdate(const glm::vec2& gravity, const float timeStep) = 0;
+	virtual void Debug() = 0;
 	virtual void makeGizmo() = 0;
 	virtual void resetPosition() {};
 
-	ShapeType getShapeID() { return m_shapeID; }
+	void SetColour(const glm::vec4& colour) { m_colour = colour; }
+	glm::vec4 GetColour() const { return m_colour; }
+	void SetKinematic(const bool kinematic) { m_kinematic = kinematic; }
+	bool GetKinematic() const { return m_kinematic; }
+
+	void SetStatic(const bool isStatic) { m_isStatic = isStatic; }
+	bool GetStatic()const { return m_isStatic; }
+
+	ShapeType GetShapeIDType() { return m_shapeID; }
 
 protected:
-	// Constructor which allows us to pass through our shapeID
-	PhysicsObject(ShapeType a_shapeID) : m_shapeID(a_shapeID) {}
 	// This variable allows us to access our enum
 	ShapeType m_shapeID;
+	// stores the colour of the object
+	glm::vec4 m_colour;
+	// determines if the object is kinematic
+	bool m_kinematic;
+	bool m_isStatic;
 };

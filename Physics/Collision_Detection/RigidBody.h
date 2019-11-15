@@ -9,38 +9,45 @@
 
 class RigidBody : public PhysicsObject {
 public:
-	RigidBody(ShapeType shapeID, glm::vec2 position, glm::vec2 velocity, float mass, float rotation, float linearDrag, float angularDrag, 
-		float elasticity, bool kinematic, bool isStatic, glm::vec4 colour);
+	RigidBody(const ShapeType& shapeID, const glm::vec2& position, const glm::vec2& velocity, const float rotation, const float mass, 
+		const glm::vec4& colour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), const bool kinematic = false, const bool isStatic = false,
+		const float elasticity = 1.0f, const float linearDrag = 0.0f, const float angularDrag = 0.0f);
 	~RigidBody();
 
-	virtual void fixedUpdate(glm::vec2 gravity, float timeStep);
-	virtual void debug();
+	virtual void FixedUpdate(const glm::vec2& gravity, const float timeStep);
+	virtual void Debug();
 
 	//virtual bool checkCollision(PhysicsObject* pOther);
 	virtual void resolveCollision(RigidBody* actor2);
 
-	void applyForce(glm::vec2 force);
-	void applyForceToActor(RigidBody* actor2, glm::vec2 force);
+	void ApplyForce(const glm::vec2& force);
+
+	void ApplyForceToActor(const glm::vec2& force, RigidBody* actor);
+
 	void resolveOverlap(const glm::vec2& displacement);
 
-	void setVelocity(glm::vec2 newVelocity) { m_velocity = newVelocity; }
-	void setLinearDrag(float linearDrag) { m_linearDrag = linearDrag; }
-	void setAngularDrag(float angularDrag) { m_angularDrag = angularDrag; }
-	void setElasticity(float elasticity) { m_elasticity = elasticity; }
-	void setPosition(glm::vec2 position) { m_position = position; }
-	void setRigidStatic(bool state) { isStaticRigid = state; }
-	void setKinematic(bool state) { isKinematic = state; }
+    void SetPosition(const glm::vec2& position);
+	glm::vec2 GetPosition() const { return m_position; }
 
-	glm::vec2 getPosition() { return m_position; }
-	glm::vec2 getVelocity() { return m_velocity; }
-	float getMass() { return m_mass; }
-	float getRotation() { return m_rotation; }
-	float getLinearDrag() { return m_linearDrag; }
-	float getAngularDrag() { return m_angularDrag; }
-	float getElasticity() { return m_elasticity; }
+	void SetVelocity(const glm::vec2& velocity);
+	glm::vec2 GetVelocity() const { return m_velocity; }
 
-	bool getRigidStatic() { return isStaticRigid; }
-	bool getKinematic() { return isKinematic; }
+	void SetRotation(const float rotation);
+	float GetRotation() const { return m_rotation; }
+
+	void SetMass(const float mass);
+	float GetMass() const { return m_mass; }
+
+	float GetElasticity() const { return m_elasticity; }
+
+	void SetLinearDrag(const float linearDrag);
+	float GetLinearDrag() const { return m_linearDrag; }
+
+	void SetAngularDrag(const float angularDrag);
+	float GetAngularDrag() const { return m_angularDrag; }
+
+	//void SetStatic(const bool staticRigidbody);
+	//bool GetStatic() const { return m_isStaticRigid; }
 
 
 protected:
@@ -52,6 +59,6 @@ protected:
 	float m_linearDrag;
 	float m_angularDrag;
 	float m_elasticity;
-	bool  isStaticRigid;
+	bool m_isStaticRigid;
 	bool isKinematic;
 };

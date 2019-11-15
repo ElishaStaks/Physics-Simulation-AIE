@@ -5,22 +5,24 @@
 class Plane : public PhysicsObject
 {
 public:
-	Plane();
-	Plane(glm::vec2 normal, float distance);
+	Plane(const glm::vec2& normal, const float distance,
+		const glm::vec4& colour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), const bool kinematic = false);
 	~Plane();
 
-	virtual void fixedUpdate(glm::vec2 gravity, float timeStep) {}
-	virtual void debug();
-	virtual void makeGizmo();
+	virtual void FixedUpdate(const glm::vec2& gravity, const float timeStep) {}
+	virtual void Debug();
+	virtual void makeGizmo() override;
 	virtual void resetPosition() {}
 
 	void resolveCollision(RigidBody* actor2);
 
-	glm::vec2 getNormal() { return m_normal; }
-	float getDistance() { return m_distanceToOrigin; }
+    glm::vec2 GetNormal() const { return m_normal; }
+	float GetDistance() const { return m_distanceToOrigin; }
 
 protected:
+	// normalised vector perpendicular to the plane
 	glm::vec2 m_normal;
+	// distance between the plane and the origin
 	float m_distanceToOrigin;
 };
 

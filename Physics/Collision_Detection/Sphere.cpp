@@ -1,20 +1,22 @@
 #include "Sphere.h"
 #include <glm/ext.hpp>
 
-Sphere::Sphere(glm::vec2 position, glm::vec2 velocity, float mass, float radius, float linearDrag, float angularDrag, 
-	float elasticity, bool kinematic, bool isStatic, glm::vec4 colour)
-	: RigidBody(SPHERE, position, velocity, mass, 0, linearDrag, angularDrag, 1, kinematic, isStatic, colour)
+Sphere::Sphere(const glm::vec2& position, const glm::vec2& velocity, const float radius, const float mass,
+	const glm::vec4& colour, const bool kinematic, const bool isStatic,
+	const float elasticity, const float linearDrag, const float angularDrag)
+	: RigidBody(SPHERE, position, velocity, 0.0f, mass, colour, kinematic, isStatic, elasticity, linearDrag, angularDrag)
 {
+	m_radius = radius;
 	m_position = position;
 	m_velocity = velocity;
-	m_mass = mass;
 	m_radius = radius;
+	m_mass = mass;
+	m_colour = colour;
+	m_kinematic = kinematic;
+	m_isStaticRigid = isStatic;
+	m_elasticity = elasticity;
 	m_linearDrag = linearDrag;
 	m_angularDrag = angularDrag;
-	m_elasticity = elasticity;
-	isKinematic = kinematic;
-	isStaticRigid = isStatic;
-	m_colour = colour;
 }
 
 Sphere::~Sphere()
@@ -23,5 +25,10 @@ Sphere::~Sphere()
 
 void Sphere::makeGizmo()
 {
-	aie::Gizmos::add2DCircle(m_position, m_radius, 20, m_colour, nullptr);
+	aie::Gizmos::add2DCircle(m_position, m_radius, 25, m_colour);
+}
+
+void Sphere::SetRadius(const float radius)
+{
+	m_radius = radius;
 }

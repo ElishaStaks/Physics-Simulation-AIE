@@ -3,20 +3,21 @@
 #include <iostream>
 
 
-AABB::AABB(const glm::vec2 & halfExtents, const glm::vec2 & position, glm::vec2 velocity, float mass,  float linearDrag, float angularDrag, 
-	float elasticity, bool kinematic, bool isStatic, glm::vec4 colour)
-	:	RigidBody(BOX, position, velocity, mass, 0, linearDrag, angularDrag, elasticity, kinematic, isStatic, colour), m_halfExtents(halfExtents)
+AABB::AABB(const glm::vec2& halfExtents, const glm::vec2& position, const glm::vec2& velocity, const float mass,
+	const glm::vec4& colour, const bool kinematic, const bool isStatic,
+	const float elasticity, const float linearDrag, const float angularDrag)
+	: RigidBody(BOX, position, velocity, 0.0f, mass, colour, kinematic, isStatic, elasticity, linearDrag, angularDrag), m_halfExtents(halfExtents)
 {
 	m_halfExtents = halfExtents;
 	m_position = position;
 	m_velocity = velocity;
 	m_mass = mass;
+	m_colour = colour;
+	m_kinematic = kinematic;
+	m_isStaticRigid = isStatic;
+	m_elasticity = elasticity;
 	m_linearDrag = linearDrag;
 	m_angularDrag = angularDrag;
-	m_elasticity = elasticity;
-	isKinematic = kinematic;
-	isStaticRigid = isStatic;
-	m_colour = colour;
 }
 
 AABB::~AABB()

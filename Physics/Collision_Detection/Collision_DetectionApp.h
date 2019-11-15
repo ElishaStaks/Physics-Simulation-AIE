@@ -25,25 +25,5 @@ protected:
 	aie::Renderer2D*	m_2dRenderer;
 	aie::Font*			m_font;
 
-	Sphere*             m_sphere1;
-	Sphere*             m_sphere2;
-	Sphere*             m_sphere3;
-	Sphere*             m_sphere4;
-	Sphere*             m_sphere5;
-	Sphere*             m_sphere6;
-	Sphere*             m_sphere7;
-
-	Plane*              m_plane;
-	Plane*              m_plane2;
-	Plane*              m_plane3;
-	Plane*              m_plane4;
-	Plane*              m_plane5;
-	Plane*              m_plane6;
-
-	AABB*               box1;
-	AABB*               box2;
-	AABB*               box3;
-	AABB*               box4;
-
 	PhysicsScene*       m_physicsScene;
 };
