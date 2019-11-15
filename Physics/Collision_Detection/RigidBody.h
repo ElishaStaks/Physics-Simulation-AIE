@@ -46,8 +46,8 @@ public:
 	void SetAngularDrag(const float angularDrag);
 	float GetAngularDrag() const { return m_angularDrag; }
 
-	//void SetStatic(const bool staticRigidbody);
-	//bool GetStatic() const { return m_isStaticRigid; }
+	void SetStatic(const bool staticRigidbody) { m_isStaticRigid = staticRigidbody; }
+	bool GetStatic() const { return m_isStaticRigid; }
 
 
 protected:

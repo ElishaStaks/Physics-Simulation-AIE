@@ -39,38 +39,45 @@ bool Collision_DetectionApp::startup() {
 	Plane* plane2 = new Plane(glm::normalize(glm::vec2(-0.707f, 0.707f)), -70.0f);
 	m_physicsScene->AddActor(plane2);
 
-	AABB* staticBox = new AABB(glm::vec2(7.0f, 7.0f), glm::vec2(-5, 20), glm::vec2(0, 0), 2.0f, glm::vec4(1, 0, 0, 1), false, true, 1.0f, 0.0f, 0.0f);
-	m_physicsScene->AddActor(staticBox);
+	AABB* kinematicBox = new AABB(glm::vec2(7.0f, 7.0f), glm::vec2(20, 5), glm::vec2(0, 0), 2.0f, glm::vec4(1, 0, 0, 1), true, false, 1.0f, 0.0f, 0.0f);
+	m_physicsScene->AddActor(kinematicBox);
 
-	Sphere* staticCircle = new Sphere({ -40.0f, 0.0f }, { 0.0f, 0.0f }, 10.0f, 1.0f, { 1.0f, 1.0f, 1.0f, 1.0f }, true, false);
-	m_physicsScene->AddActor(staticCircle);
+	Sphere* staticCircle2 = new Sphere({ 2, 5 }, { 0.0f, 0.0f }, 8.0f, 1.0f, { 1.0f, 1.0f, 1.0f, 1.0f }, false, true);
+	m_physicsScene->AddActor(staticCircle2);
 
-	AABB* box1 = new AABB(glm::vec2(7.0f, 7.0f), { 55.0f, 30.0f }, { 0.0f, 10.0f }, 2.0f, { 1.0f, 0.0f, 0.0f, 1.0f }, false, false);
+	AABB* box1 = new AABB(glm::vec2(7.0f, 7.0f), { 55.0f, 130.0f }, { 0.0f, 10.0f }, 2.0f, { 1.0f, 0.0f, 0.0f, 1.0f }, false, false);
 	m_physicsScene->AddActor(box1);
 	AABB* box2 = new AABB(glm::vec2(7.0f, 7.0f), { -65.0f, 7.0f }, { 3.0f, 3.0f }, 5.0f, { 0.0f, 1.0f, 1.0f, 1.0f }, false, false);
 	m_physicsScene->AddActor(box2);
-	AABB* box3 = new AABB(glm::vec2(7.0f, 7.0f), { 60.0f, -7.0f }, { 10.0f, 0.0f }, 2.0f, { 1.0f, 1.0f, 0.0f, 1.0f }, false, false);
+	AABB* box3 = new AABB(glm::vec2(7.0f, 7.0f), { 60.0f, -117.0f }, { 10.0f, 0.0f }, 2.0f, { 1.0f, 1.0f, 0.0f, 1.0f }, false, false);
 	m_physicsScene->AddActor(box3);
-	AABB* box4 = new AABB(glm::vec2(7.0f, 7.0f), { -65.0f, -20.0f }, { -3.0f, 3.0f }, 5.0f, { 1.0f, 0.0f, 1.0f, 1.0f }, false, false);
+	AABB* box4 = new AABB(glm::vec2(7.0f, 7.0f), { -100, -220.0f }, { -3.0f, 3.0f }, 5.0f, { 1.0f, 0.0f, 1.0f, 1.0f }, false, false);
 	m_physicsScene->AddActor(box4);
 
 	Sphere* sphere1 = new Sphere({ -60.0f, 20.0f }, { 0.0f, -10.0f }, 5.0f, 2.0f, { 1.0f, 0.0f, 0.0f, 1.0f }, false, false);
 	m_physicsScene->AddActor(sphere1);
 	Sphere* sphere2 = new Sphere({ 65.0f, 7.0f }, { -3.0f, -3.0f }, 5.0f, 5.0f, { 0.0f, 1.0f, 1.0f, 1.0f }, false, false);
 	m_physicsScene->AddActor(sphere2);
-	Sphere* sphere3 = new Sphere({ -60.0f, -7.0f }, { -10.0f, 0.0f }, 5.0f, 2.0f, { 1.0f, 1.0f, 0.0f, 1.0f }, false, false);
+	Sphere* sphere3 = new Sphere({ -60.0f, -7.0f }, { -100, 0.0f }, 5.0f, 2.0f, { 1.0f, 1.0f, 0.0f, 1.0f }, false, false);
 	m_physicsScene->AddActor(sphere3);
-	Sphere* sphere4 = new Sphere({ 65.0f, -20.0f }, { -3.0f, -3.0f }, 5.0f, 5.0f, { 1.0f, 0.0f, 1.0f, 1.0f }, false, false);
+	Sphere* sphere4 = new Sphere({ 65.0f, -20.0f }, { -100.0f, -3.0f }, 5.0f, 5.0f, { 1.0f, 0.0f, 1.0f, 1.0f }, false, false);
 	m_physicsScene->AddActor(sphere4);
 
-	sphere1->ApplyForce(glm::vec2(50, 0));
-	sphere2->ApplyForce(glm::vec2(0, 50));
-	sphere3->ApplyForce(glm::vec2(50, 0));
-	sphere4->ApplyForce(glm::vec2(0, 50));
+	Sphere* sphere5 = new Sphere({ -52.0f, -7.0f }, { -100, 0.0f }, 5.0f, 2.0f, { 1.0f, 1.0f, 0.0f, 1.0f }, false, false);
+	m_physicsScene->AddActor(sphere5);
+	Sphere* sphere6 = new Sphere({ 75.0f, -20.0f }, { -100.0f, -3.0f }, 5.0f, 5.0f, { 1.0f, 0.0f, 1.0f, 1.0f }, false, false);
+	m_physicsScene->AddActor(sphere6);
 
-	box1->ApplyForce(glm::vec2(0, 50));
+	sphere1->ApplyForce(glm::vec2(50, 50));
+	sphere2->ApplyForce(glm::vec2(0, 50));
+	sphere3->ApplyForce(glm::vec2(100, 0));
+	sphere4->ApplyForce(glm::vec2(0, 100));
+	sphere5->ApplyForce(glm::vec2(-100, 0));
+	sphere6->ApplyForce(glm::vec2(0, -100));
+
+	box1->ApplyForce(glm::vec2(0, 100));
 	box2->ApplyForce(glm::vec2(50, 0));
-	box3->ApplyForce(glm::vec2(30, 50));
+	box3->ApplyForce(glm::vec2(100, 50));
 	box4->ApplyForce(glm::vec2(10, 50));
 
 	return true;

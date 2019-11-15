@@ -16,8 +16,8 @@ class PhysicsObject
 {
 
 protected:
-	PhysicsObject(const ShapeType& a_shapeID, const glm::vec4& colour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), const bool kinematic = false, const bool isStatic = false) :
-		m_shapeID(a_shapeID), m_colour(colour), m_kinematic(kinematic), m_isStatic(isStatic) {}
+	PhysicsObject(const ShapeType& a_shapeID, const glm::vec4& colour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), const bool kinematic = false) :
+		m_shapeID(a_shapeID), m_colour(colour), m_kinematic(kinematic) {}
 
 public:
 	virtual void FixedUpdate(const glm::vec2& gravity, const float timeStep) = 0;
@@ -30,9 +30,6 @@ public:
 	void SetKinematic(const bool kinematic) { m_kinematic = kinematic; }
 	bool GetKinematic() const { return m_kinematic; }
 
-	void SetStatic(const bool isStatic) { m_isStatic = isStatic; }
-	bool GetStatic()const { return m_isStatic; }
-
 	ShapeType GetShapeIDType() { return m_shapeID; }
 
 protected:
@@ -42,5 +39,4 @@ protected:
 	glm::vec4 m_colour;
 	// determines if the object is kinematic
 	bool m_kinematic;
-	bool m_isStatic;
 };
